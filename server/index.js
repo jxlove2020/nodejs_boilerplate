@@ -33,6 +33,8 @@ mongoose
 // 라우트 생성
 app.get('/', (req, res) => res.send('Hello World!'));
 
+app.get('/api/hello', (req, res) => res.send('안녕하세요'));
+
 app.post('/api/users/register', (req, res) => {
   // 회원가입할 때 필요한 정보들을 client에서 가져오면
   // 그것들을 데이터 베이스에 넣어 준다.
