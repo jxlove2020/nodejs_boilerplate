@@ -1,9 +1,10 @@
 const express = require('express');
-const { PW } = require('./config/userConfig') 
 const app = express()
 const port = 5000
 const bodyParser = require('body-parser')
 const { User } = require("./models/User")
+
+const config = require('./config/key')
 
 // application/x-www-form-urlencoded 를 분석해서 가져올수 있게
 app.use(bodyParser.urlencoded({extended: true}))
@@ -11,9 +12,10 @@ app.use(bodyParser.urlencoded({extended: true}))
 // application/json 을 분석해서 가져올수 있게 
 app.use(bodyParser.json())
 
-// 몽고디비 연결 / 데이터베이스명 : myFirstDatabase 로 지정
+// 몽고디비 연결 
 const mongoose = require('mongoose')
-mongoose.connect(`mongodb+srv://joseph:${PW}@firstmap.chan2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`, {
+// config.mongoURI 로 데이터베이스 연결
+mongoose.connect(config.mongoURI, {
   // 에러나지 않도록 써줍니다.  
   useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
 }).then(() => console.log('MongoDB Connected...'))
