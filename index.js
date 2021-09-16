@@ -3,6 +3,7 @@ const app = express();
 const port = 5000;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { auth } = require('./middleware/auth');
 const { User } = require('./models/User');
 
 const config = require('./config/key');
@@ -32,7 +33,7 @@ mongoose
 // 라우트 생성
 app.get('/', (req, res) => res.send('Hello World!'));
 
-app.post('/register', (req, res) => {
+app.post('/api/users/register', (req, res) => {
   // 회원가입할 때 필요한 정보들을 client에서 가져오면
   // 그것들을 데이터 베이스에 넣어 준다.
   const user = new User(req.body);
@@ -45,7 +46,7 @@ app.post('/register', (req, res) => {
   });
 });
 
-app.post('/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
   // 요청된 이메일을 데이터베이스 찾는다.
   User.findOne({ email: req.body.email }, (err, user) => {
     if (!user) {
@@ -72,6 +73,29 @@ app.post('/login', (req, res) => {
           .status(200)
           .json({ loginSuccess: true, userId: user._id });
       });
+    });
+  });
+});
+
+// 미들웨어 auth : const { auth } = require('./middleware/auth');
+app.get('/api/users/auth', auth, (req, res) => {
+  // 여기까지 왔으면 미들웨어 auth를 통과했다는 얘기
+  res.status(200).json({
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image,
+  });
+});
+
+app.get('/api/users/logout', auth, (req, res) => {
+  User.findOneAndUpdate({ _id: req.user._id }, { token: '' }, (err, user) => {
+    if (err) return res.json({ success: false, err });
+    return res.status(200).send({
+      success: true,
     });
   });
 });
