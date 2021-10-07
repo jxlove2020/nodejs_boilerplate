@@ -1,30 +1,35 @@
 import React, { useState } from 'react';
+import Axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../../../_actions/user_action';
-
+import { withRouter } from 'react-router-dom';
 function LoginPage(props) {
   const dispatch = useDispatch();
+
   const [Email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
-  const onEmailHandler = e => {
-    setEmail(e.currentTarget.value);
-  };
-  const onPasswordHandler = e => {
-    setPassword(e.currentTarget.value);
-  };
-  const onSubmitHandler = e => {
-    // 페이지 리프레시 방지
-    e.preventDefault();
-    console.log('Email', Email);
-    console.log('Password', Password);
 
-    let body = { email: Email, password: Password };
+  const onEmailHandler = event => {
+    setEmail(event.currentTarget.value);
+  };
+
+  const onPasswordHandler = event => {
+    setPassword(event.currentTarget.value);
+  };
+
+  const onSubmitHandler = event => {
+    event.preventDefault();
+
+    let body = {
+      email: Email,
+      password: Password,
+    };
 
     dispatch(loginUser(body)).then(response => {
       if (response.payload.loginSuccess) {
         props.history.push('/');
       } else {
-        alert('Error');
+        alert('Error˝');
       }
     });
   };
@@ -48,10 +53,10 @@ function LoginPage(props) {
         <label>Password</label>
         <input type="password" value={Password} onChange={onPasswordHandler} />
         <br />
-        <button style={{ display: 'flex' }}>Login</button>
+        <button type="submit">Login</button>
       </form>
     </div>
   );
 }
 
-export default LoginPage;
+export default withRouter(LoginPage);

@@ -1,20 +1,19 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
-
+import { withRouter } from 'react-router-dom';
 function LandingPage(props) {
   useEffect(() => {
-    // 서버가 사이트 및 포트가 달라 CORS 에러 발생
     axios.get('/api/hello').then(response => {
-      console.log(response.data);
+      console.log(response);
     });
   }, []);
 
   const onClickHandler = () => {
-    axios.get('/api/users/logout').then(response => {
+    axios.get(`/api/users/logout`).then(response => {
       if (response.data.success) {
         props.history.push('/login');
       } else {
-        alert('로그아웃하는데 실패했습니다.');
+        alert('로그아웃 하는데 실패 했습니다.');
       }
     });
   };
@@ -29,12 +28,11 @@ function LandingPage(props) {
         height: '100vh',
       }}
     >
-      <h2>시작페이지</h2>
-      <br />
-      {/* 로그아웃 */}
+      <h2>시작 페이지</h2>
+
       <button onClick={onClickHandler}>로그아웃</button>
     </div>
   );
 }
 
-export default LandingPage;
+export default withRouter(LandingPage);
